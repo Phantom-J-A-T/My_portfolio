@@ -1,0 +1,104 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;700&family=Space+Grotesk:wght@400;500;600;700&display=swap');
+@import "tailwindcss";
+
+@theme {
+  --color-cyber-midnight: #060813;
+  --color-cyber-red: #dc2626;
+  --color-cyber-red-glow: #ef4444;
+  --color-corporate-blue: #2563eb;
+  --color-corporate-blue-glow: #3b82f6;
+  --color-ice-white: #f8fafc;
+  
+  --font-sans: "Inter", system-ui, sans-serif;
+  --font-display: "Space Grotesk", sans-serif;
+  --font-mono: "JetBrains Mono", monospace;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+  font-family: var(--font-sans);
+  background-color: var(--color-ice-white);
+  color: #1e293b;
+  min-height: 100vh;
+  transition: background-color 0.5s cubic-bezier(0.4, 0, 0.2, 1), color 0.5s;
+}
+
+html.dark body {
+  background-color: var(--color-cyber-midnight);
+  color: #f1f5f9;
+}
+
+/* Scrollbar customizations */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+html.dark ::webkit-scrollbar-track {
+  background: #03040c;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 4px;
+}
+
+html.dark ::webkit-scrollbar-thumb {
+  background: rgba(239, 68, 68, 0.3);
+  border: 1px solid rgba(239, 68, 68, 0.1);
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #94a3b8;
+}
+
+html.dark ::webkit-scrollbar-thumb:hover {
+  background: rgba(239, 68, 68, 0.5);
+}
+
+/* Glow filters and matrix grid design details */
+.cyber-grid {
+  background-image: linear-gradient(to right, rgba(239, 68, 68, 0.03) 1px, transparent 1px),
+                    linear-gradient(to bottom, rgba(239, 68, 68, 0.03) 1px, transparent 1px);
+  background-size: 40px 40px;
+}
+
+html.light .cyber-grid {
+  background-image: linear-gradient(to right, rgba(37, 99, 235, 0.02) 1px, transparent 1px),
+                    linear-gradient(to bottom, rgba(37, 99, 235, 0.02) 1px, transparent 1px);
+  background-size: 40px 40px;
+}
+
+/* Glowing text effects */
+.cyber-glow-text {
+  text-shadow: 0 0 10px rgba(239, 68, 68, 0.5);
+}
+
+html.light .cyber-glow-text {
+  text-shadow: none;
+}
+
+/* Custom glow borders */
+.shadow-red-glow {
+  box-shadow: 0 0 25px rgba(220, 38, 38, 0.25);
+}
+
+.shadow-blue-glow {
+  box-shadow: 0 0 25px rgba(37, 99, 235, 0.15);
+}
+
+/* Smooth typing text support */
+@keyframes blink {
+  50% { opacity: 0; }
+}
+
+.cursor-blink {
+  animation: blink 1s step-end infinite;
+}
