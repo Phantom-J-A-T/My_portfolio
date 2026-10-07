@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState, type KeyboardEvent } from "react";
 import { PROFILE, PROJECTS, TOOLCHAIN, type Filter } from "../data";
 import { useSite } from "../lib/site";
+import { soundtrack } from "../lib/sound";
 
 type Line = { kind: "in" | "out"; text: string };
 
@@ -81,6 +82,21 @@ export function TerminalTile() {
         if (what !== "hire-me") return ["sudo: only 'sudo hire-me' is allowed here"];
         navigator.clipboard?.writeText(email).catch(() => {});
         return ["[sudo] password for visitor: ********", `access granted. ${email} copied to clipboard.`];
+      },
+    },
+    music: {
+      help: "on | off: the soundtrack",
+      run: ([v]) => {
+        const track = soundtrack();
+        if (v === "on") {
+          track.start();
+          return ["synth online. 92 bpm, A minor. scroll to open the filter."];
+        }
+        if (v === "off") {
+          track.stop();
+          return ["synth offline."];
+        }
+        return [`usage: music on | off   (currently ${track.playing ? "on" : "off"})`];
       },
     },
     date: {

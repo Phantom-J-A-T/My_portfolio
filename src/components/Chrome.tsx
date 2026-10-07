@@ -3,6 +3,7 @@ import { motion } from "motion/react";
 import { ArrowUp } from "lucide-react";
 import { FILTERS, PROFILE, type Filter } from "../data";
 import { useSite } from "../lib/site";
+import { SoundToggle } from "./SoundToggle";
 
 /** The floating filter dock: the thesis verbs, always within thumb reach. */
 export function Dock({ counts }: { counts: Record<Filter, number> }) {
@@ -22,7 +23,7 @@ export function Dock({ counts }: { counts: Record<Filter, number> }) {
               onClick={() => setFilter(f.id)}
               aria-pressed={on}
               aria-label={`${f.label}: ${counts[f.id]} tiles`}
-              className={`relative flex h-10 cursor-pointer items-center gap-1 rounded-full px-3.5 text-[14px] transition-colors sm:px-4 ${
+              className={`relative flex h-10 cursor-pointer items-center gap-1 rounded-full px-3 text-[14px] transition-colors sm:px-4 ${
                 on ? "text-void" : "text-ash hover:text-bone"
               }`}
             >
@@ -38,6 +39,8 @@ export function Dock({ counts }: { counts: Record<Filter, number> }) {
             </button>
           );
         })}
+        <span className="mx-1 my-2 w-px bg-edge-hi" aria-hidden />
+        <SoundToggle />
       </div>
     </nav>
   );

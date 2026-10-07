@@ -19,6 +19,7 @@ import { SiteContext } from "../lib/site";
 import { CaseStudy } from "./CaseStudy";
 import { BackToTop, Dock, Footer } from "./Chrome";
 import { Boot, Crosshair, Spotlight } from "./Motion";
+import { soundtrack } from "../lib/sound";
 import { ProfileTile } from "../tiles/ProfileTile";
 import { ThesisTile } from "../tiles/ThesisTile";
 import { ProjectCard, ProjectCode, ProjectPoster } from "../tiles/ProjectTile";
@@ -250,6 +251,7 @@ export function Portfolio() {
   }, [ready]);
 
   const openProject = useCallback((id: string) => {
+    soundtrack().whoosh();
     setOpenId(id);
     history.replaceState(null, "", `#${id}`);
   }, []);
