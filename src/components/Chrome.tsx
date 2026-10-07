@@ -72,12 +72,8 @@ export function BackToTop() {
 
 export function Footer() {
   return (
-    <footer className="label mx-auto mt-16 flex max-w-[1800px] flex-col gap-2 px-5 pb-28 sm:flex-row sm:justify-between">
+    <footer className="label mx-auto mt-16 max-w-[1800px] px-5 pb-28">
       <span>© {new Date().getFullYear()} {PROFILE.name}</span>
-      <span>Placeholder photography via Unsplash</span>
-      <a href="https://github.com/Phantom-J-A-T/My_portfolio" className="hover:text-bone" target="_blank" rel="noreferrer">
-        View the source
-      </a>
     </footer>
   );
 }
