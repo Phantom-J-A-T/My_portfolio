@@ -49,8 +49,8 @@ function Seal({ initials }: { initials: string }) {
           return (
             <circle
               key={i}
-              cx={50 + Math.cos(a) * 46}
-              cy={50 + Math.sin(a) * 46}
+              cx={(50 + Math.cos(a) * 46).toFixed(2)}
+              cy={(50 + Math.sin(a) * 46).toFixed(2)}
               r={i % 3 === 0 ? 1.8 : 1}
               fill="var(--color-bone)"
               opacity={i % 3 === 0 ? 0.9 : 0.35}
