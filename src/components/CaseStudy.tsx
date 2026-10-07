@@ -58,7 +58,7 @@ export function CaseStudy({ project, onClose }: { project: Project; onClose: () 
       ref={scrollRef}
       layoutScroll
       data-lenis-prevent
-      className="fixed inset-0 z-[70] overflow-y-auto overscroll-contain px-3 py-3 sm:px-8 sm:py-10"
+      className="fixed inset-0 z-[70] overflow-y-auto overscroll-contain px-3 pb-3 pt-[72px] sm:px-8 sm:pb-10 sm:pt-20"
       role="dialog"
       aria-modal="true"
       aria-labelledby="case-title"
@@ -72,6 +72,24 @@ export function CaseStudy({ project, onClose }: { project: Project; onClose: () 
         transition={{ duration: 0.3, ease: EASE_OUT }}
         onClick={onClose}
       />
+
+      {/* Close lives outside the panel, pinned to the viewport, so it's always in reach. */}
+      <motion.button
+        ref={closeRef}
+        type="button"
+        onClick={onClose}
+        className="pill fixed right-3 top-3 z-[75] h-11 gap-2 bg-black/80 pl-3.5 pr-4 ring-1 ring-edge-hi backdrop-blur-xl sm:right-6 sm:top-5"
+        aria-label="Close case study"
+        initial={{ opacity: 0, transform: "translateY(-6px)" }}
+        animate={{ opacity: 1, transform: "translateY(0px)" }}
+        exit={{ opacity: 0, transition: { duration: 0.12 } }}
+        transition={{ duration: 0.25, ease: EASE_OUT, delay: 0.15 }}
+      >
+        <X className="h-4 w-4" aria-hidden />
+        Close
+        <kbd className="mono ml-1 hidden rounded-[5px] px-1.5 py-0.5 text-[10px] text-ash ring-1 ring-edge-hi sm:inline">esc</kbd>
+      </motion.button>
+
       <article key={project.id} className="relative mx-auto w-full max-w-[880px]">
         <motion.div
           className="tile absolute inset-0"
@@ -80,20 +98,6 @@ export function CaseStudy({ project, onClose }: { project: Project; onClose: () 
           exit={{ opacity: 0 }}
           transition={{ duration: 0.3, ease: EASE_OUT }}
         />
-
-        <motion.button
-          ref={closeRef}
-          type="button"
-          onClick={onClose}
-          className="pill icon-btn absolute right-4 top-4 z-10 bg-black/80"
-          aria-label="Close case study"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          exit={{ opacity: 0, transition: { duration: 0.1 } }}
-          transition={{ duration: 0.2, delay: 0.3 }}
-        >
-          <X className="h-4 w-4" aria-hidden />
-        </motion.button>
 
         <motion.div
           layoutId={`media-${project.id}`}
