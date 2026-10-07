@@ -509,3 +509,6 @@ export const LANGUAGE_SERIES = {
 };
 
 export const SECRET_NOTE = "if you can read this, you should probably email me.";
+
+// How many weeks of contributions the GitHub tile shows.
+export const GITHUB_WEEKS = 22;

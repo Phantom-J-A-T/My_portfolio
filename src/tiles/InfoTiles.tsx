@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { Check } from "lucide-react";
 import { PROFILE, TODOS, TOOLCHAIN } from "../data";
+import { GITHUB_WEEKS as WEEKS } from "../data";
 import { GithubIcon } from "../lib/icons";
 import { Scramble } from "../lib/Scramble";
 import { useSite } from "../lib/site";
@@ -65,29 +66,11 @@ function Seal({ initials }: { initials: string }) {
 
 /* ---------- GitHub ---------- */
 
-type Day = { date: string; count: number; level: 0 | 1 | 2 | 3 | 4 };
-const WEEKS = 22;
-
+/** Renders the server-fetched snapshot; never calls GitHub from the browser. */
 export function GithubTile() {
+  const { github } = useSite();
   const user = PROFILE.links.githubUser;
-  const [stats, setStats] = useState<{ repos: number; followers: number } | null>(null);
-  const [days, setDays] = useState<Day[] | null>(null);
-  const [failed, setFailed] = useState(false);
-  const [statsFailed, setStatsFailed] = useState(false);
-
-  useEffect(() => {
-    const ac = new AbortController();
-    fetch(`https://api.github.com/users/${user}`, { signal: ac.signal })
-      .then((r) => (r.ok ? r.json() : Promise.reject()))
-      .then((j) => setStats({ repos: j.public_repos, followers: j.followers }))
-      .catch(() => setStatsFailed(true));
-    fetch(`https://github-contributions-api.jogruber.de/v4/${user}?y=last`, { signal: ac.signal })
-      .then((r) => (r.ok ? r.json() : Promise.reject()))
-      .then((j) => setDays((j.contributions as Day[]).slice(-WEEKS * 7)))
-      .catch(() => setFailed(true));
-    return () => ac.abort();
-  }, [user]);
-
+  const { repos, followers, days } = github;
   const total = days?.reduce((n, d) => n + d.count, 0);
   const cells = days ?? Array.from({ length: WEEKS * 7 }, () => null);
 
@@ -101,11 +84,7 @@ export function GithubTile() {
           <p className="label">github.com</p>
           <p className="truncate text-[15px] text-bone">@{user}</p>
           <p className="text-[13px] text-ash">
-            {stats
-              ? `${stats.repos} public repos · ${stats.followers} followers`
-              : statsFailed
-                ? "Backend, security and data work"
-                : "Loading profile"}
+            {repos != null ? `${repos} public repos · ${followers ?? 0} followers` : "Backend, security and data work"}
           </p>
         </div>
         <a href={PROFILE.links.github} target="_blank" rel="noreferrer" className="pill">
@@ -130,7 +109,13 @@ export function GithubTile() {
       </div>
       <p className="label mt-3 flex justify-between">
         <span>Last {WEEKS} weeks</span>
-        <span>{failed ? "Couldn't reach GitHub" : total != null ? `${total} contributions` : "…"}</span>
+        {total != null ? (
+          <span>{total} contributions</span>
+        ) : (
+          <a href={PROFILE.links.github} target="_blank" rel="noreferrer" className="hover:text-bone">
+            View the profile
+          </a>
+        )}
       </p>
     </article>
   );

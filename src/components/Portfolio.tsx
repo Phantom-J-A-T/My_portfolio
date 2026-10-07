@@ -15,6 +15,7 @@ import {
 } from "motion/react";
 import { ReactLenis } from "lenis/react";
 import { PROJECTS, type Discipline, type Filter } from "../data";
+import type { GithubSnapshot } from "../lib/github";
 import { SiteContext } from "../lib/site";
 import { CaseStudy } from "./CaseStudy";
 import { BackToTop, Dock, Footer } from "./Chrome";
@@ -204,7 +205,7 @@ function TileShell({
   );
 }
 
-export function Portfolio() {
+export function Portfolio({ github }: { github: GithubSnapshot }) {
   const [filter, setFilter] = useState<Filter>("all");
   const [openId, setOpenId] = useState<string | null>(null);
   const [ready, setReady] = useState(false);
@@ -324,7 +325,7 @@ export function Portfolio() {
   );
 
   return (
-    <SiteContext.Provider value={{ filter, setFilter, openProject }}>
+    <SiteContext.Provider value={{ filter, setFilter, openProject, github }}>
       {reduce ? page : <ReactLenis root options={{ lerp: 0.085, wheelMultiplier: 0.9 }}>{page}</ReactLenis>}
     </SiteContext.Provider>
   );
