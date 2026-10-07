@@ -277,24 +277,6 @@ body::after {
   }
 }
 
-/* Pointer crosshair: hairlines across the viewport plus a coordinate readout. */
-.crosshair {
-  position: fixed;
-  inset: 0;
-  z-index: 55;
-  pointer-events: none;
-  mix-blend-mode: difference;
-}
-
-.crosshair > * {
-  position: absolute;
-  top: 0;
-  left: 0;
-  will-change: transform;
-  transition: opacity 0.15s ease;
-}
-
-
 /* Sound toggle equalizer: dots when off, bouncing bars while playing. */
 .eq > span {
   height: 3px;

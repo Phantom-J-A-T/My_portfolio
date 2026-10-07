@@ -103,73 +103,55 @@ export function Boot({ tiles, onReveal }: { tiles: number; onReveal: () => void 
   );
 }
 
-/** Feeds the pointer position to whichever tile is under it, for the border light. */
+/**
+ * Feeds the pointer position to whichever tile is under it, for the border light.
+ * Painted directly (no easing) and re-hit-tested every frame while the pointer or
+ * the page is moving, so the light stays locked to the cursor even mid-scroll.
+ */
 export function Spotlight() {
   useEffect(() => {
     if (!finePointer()) return;
-    const onMove = (e: PointerEvent) => {
-      const tile = (e.target as Element | null)?.closest?.<HTMLElement>(".tile");
-      if (!tile) return;
-      const r = tile.getBoundingClientRect();
-      tile.style.setProperty("--mx", `${e.clientX - r.left}px`);
-      tile.style.setProperty("--my", `${e.clientY - r.top}px`);
-    };
-    document.addEventListener("pointermove", onMove, { passive: true });
-    return () => document.removeEventListener("pointermove", onMove);
-  }, []);
-  return null;
-}
-
-/** Faint viewport hairlines that track the pointer, with a coordinate readout. */
-export function Crosshair() {
-  const [enabled, setEnabled] = useState(false);
-  const h = useRef<HTMLDivElement>(null);
-  const v = useRef<HTMLDivElement>(null);
-  const label = useRef<HTMLDivElement>(null);
-  const root = useRef<HTMLDivElement>(null);
-
-  useEffect(() => setEnabled(finePointer()), []);
-
-  useEffect(() => {
-    if (!enabled) return;
+    let x = -1;
+    let y = -1;
     let raf = 0;
-    let x = 0;
-    let y = 0;
-    let overLink = false;
-    const pad = (n: number) => String(Math.round(n)).padStart(4, "0");
-    const draw = () => {
-      raf = 0;
-      if (h.current) h.current.style.transform = `translate3d(0, ${y}px, 0)`;
-      if (v.current) v.current.style.transform = `translate3d(${x}px, 0, 0)`;
-      if (label.current) {
-        label.current.style.transform = `translate3d(${x + 14}px, ${y + 14}px, 0)`;
-        label.current.textContent = `x ${pad(x)}  y ${pad(y)}`;
-        label.current.style.opacity = overLink ? "0" : "1";
+    let activeUntil = 0;
+
+    const paint = () => {
+      if (x >= 0) {
+        const tile = document.elementFromPoint(x, y)?.closest<HTMLElement>(".tile");
+        if (tile) {
+          const r = tile.getBoundingClientRect();
+          tile.style.setProperty("--mx", `${x - r.left}px`);
+          tile.style.setProperty("--my", `${y - r.top}px`);
+        }
       }
+      raf = performance.now() < activeUntil ? requestAnimationFrame(paint) : 0;
+    };
+
+    // Keep painting for a moment after the last input, while scroll and springs settle.
+    const wake = () => {
+      activeUntil = performance.now() + 600;
+      if (!raf) raf = requestAnimationFrame(paint);
     };
     const onMove = (e: PointerEvent) => {
       x = e.clientX;
       y = e.clientY;
-      overLink = !!(e.target as Element | null)?.closest?.("[data-cursor]");
-      if (root.current) root.current.style.opacity = "1";
-      if (!raf) raf = requestAnimationFrame(draw);
+      paint(); // this frame, not the next one
+      wake();
     };
-    const onLeave = () => root.current && (root.current.style.opacity = "0");
-    window.addEventListener("pointermove", onMove, { passive: true });
+    const onLeave = () => {
+      x = y = -1;
+    };
+
+    document.addEventListener("pointermove", onMove, { passive: true });
     document.documentElement.addEventListener("pointerleave", onLeave);
+    window.addEventListener("scroll", wake, { passive: true });
     return () => {
       cancelAnimationFrame(raf);
-      window.removeEventListener("pointermove", onMove);
+      document.removeEventListener("pointermove", onMove);
       document.documentElement.removeEventListener("pointerleave", onLeave);
+      window.removeEventListener("scroll", wake);
     };
-  }, [enabled]);
-
-  if (!enabled) return null;
-  return (
-    <div ref={root} className="crosshair" style={{ opacity: 0, transition: "opacity 0.2s ease" }} aria-hidden>
-      <div ref={h} className="h-px w-full bg-white/[0.09]" />
-      <div ref={v} className="h-full w-px bg-white/[0.09]" />
-      <div ref={label} className="mono whitespace-pre text-[10px] tracking-wide text-white/60" />
-    </div>
-  );
+  }, []);
+  return null;
 }

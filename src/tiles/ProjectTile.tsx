@@ -1,5 +1,4 @@
 import { useRef, type ReactNode } from "react";
-import { ArrowUpRight } from "lucide-react";
 import { motion, useReducedMotion, useScroll, useTransform } from "motion/react";
 import type { Discipline, Project } from "../data";
 import { CodeBlock } from "../lib/Code";
@@ -99,20 +98,11 @@ function Chip({ project }: { project: Project }) {
   );
 }
 
-function Corner() {
-  return (
-    <span className="absolute right-3 top-3 z-[2] flex h-10 w-10 items-center justify-center rounded-full bg-black/85 ring-1 ring-edge transition-transform duration-300 ease-[var(--ease-out)] group-hover:rotate-45">
-      <ArrowUpRight className="h-4 w-4" aria-hidden />
-    </span>
-  );
-}
-
 /** Full-bleed image with a floating caption chip. */
 export function ProjectPoster({ project, height = 440 }: { project: Project; height?: number }) {
   return (
     <TileButton project={project} className="" style={{ height }}>
       <ParallaxMedia project={project} className="absolute inset-0" tall />
-      <Corner />
       <Chip project={project} />
     </TileButton>
   );
@@ -153,7 +143,6 @@ export function ProjectCode({ project, height = 420 }: { project: Project; heigh
         </span>
         <span className="pointer-events-none absolute inset-x-0 bottom-0 h-40 bg-gradient-to-t from-slab via-slab/80 to-transparent" />
       </motion.span>
-      <Corner />
       <Chip project={project} />
     </TileButton>
   );

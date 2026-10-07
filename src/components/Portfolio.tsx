@@ -18,7 +18,7 @@ import { PROJECTS, type Discipline, type Filter } from "../data";
 import { SiteContext } from "../lib/site";
 import { CaseStudy } from "./CaseStudy";
 import { BackToTop, Dock, Footer } from "./Chrome";
-import { Boot, Crosshair, Spotlight } from "./Motion";
+import { Boot, Spotlight } from "./Motion";
 import { soundtrack } from "../lib/sound";
 import { ProfileTile } from "../tiles/ProfileTile";
 import { ThesisTile } from "../tiles/ThesisTile";
@@ -318,7 +318,6 @@ export function Portfolio() {
       <Dock counts={counts} />
       <BackToTop />
       <Spotlight />
-      <Crosshair />
       <AnimatePresence>{open && <CaseStudy key="case" project={open} onClose={close} />}</AnimatePresence>
       <Boot tiles={TILES.length} onReveal={() => setReady(true)} />
     </MotionConfig>
