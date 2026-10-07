@@ -1,0 +1,367 @@
+@import "tailwindcss";
+
+/* Pure monochrome. No accent colour: contrast and texture do the work. */
+@theme {
+  --color-void: #000000;
+  --color-slab: #0b0b0b;
+  --color-slab-2: #141414;
+  --color-bone: #ececec;
+  --color-ash: #8c8c8c;
+  --color-dim: #5a5a5a;
+  --color-edge: rgb(255 255 255 / 0.08);
+  --color-edge-hi: rgb(255 255 255 / 0.24);
+
+  --radius-tile: 18px;
+  --ease-out: cubic-bezier(0.23, 1, 0.32, 1);
+  --ease-in-out: cubic-bezier(0.77, 0, 0.175, 1);
+}
+
+/* Fonts come from next/font, which sets these variables on <html>. */
+@theme inline {
+  --font-display: var(--font-doto), "Martian Mono", monospace;
+  --font-sans: var(--font-geist), ui-sans-serif, system-ui, sans-serif;
+  --font-mono: var(--font-martian), ui-monospace, monospace;
+}
+
+html {
+  background: var(--color-void);
+  color-scheme: dark;
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  margin: 0;
+  background: var(--color-void);
+  color: var(--color-bone);
+  font-family: var(--font-sans);
+  font-size: 15px;
+  line-height: 1.55;
+  -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+}
+
+::selection {
+  background: var(--color-bone);
+  color: var(--color-void);
+}
+
+/* Film grain over everything. */
+body::after {
+  content: "";
+  position: fixed;
+  inset: -50%;
+  z-index: 60;
+  pointer-events: none;
+  opacity: 0.07;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 .9 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  animation: grain 1.2s steps(6) infinite;
+}
+
+@keyframes grain {
+  0% { transform: translate(0, 0); }
+  20% { transform: translate(-3%, 2%); }
+  40% { transform: translate(2%, -4%); }
+  60% { transform: translate(-4%, -1%); }
+  80% { transform: translate(3%, 3%); }
+  100% { transform: translate(0, 0); }
+}
+
+:focus-visible {
+  outline: 1px solid var(--color-bone);
+  outline-offset: 3px;
+  border-radius: 6px;
+}
+
+/* ---------- Tiles ---------- */
+
+.tile {
+  position: relative;
+  overflow: hidden;
+  border-radius: var(--radius-tile);
+  background: var(--color-slab);
+  box-shadow: inset 0 0 0 1px var(--color-edge);
+  transition: box-shadow 0.4s var(--ease-out);
+}
+
+.tile:focus-within {
+  box-shadow: inset 0 0 0 1px var(--color-edge-hi);
+}
+
+/* A light that follows the pointer around the tile's border.
+   --mx / --my are set on the tile itself by the Spotlight listener. */
+.tile::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+  border-radius: inherit;
+  padding: 1px;
+  background: radial-gradient(260px circle at var(--mx, -999px) var(--my, -999px), rgb(255 255 255 / 0.7), transparent 65%);
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  pointer-events: none;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .tile:hover {
+    box-shadow: inset 0 0 0 1px var(--color-edge-hi);
+  }
+
+  .tile:hover::before {
+    opacity: 1;
+  }
+}
+
+/* Clickable tiles give a little under the finger. */
+.press {
+  transition: transform 0.14s var(--ease-out), box-shadow 0.4s var(--ease-out);
+}
+
+.press:active {
+  transform: scale(0.985);
+}
+
+/* Small caps-style meta labels. */
+.label {
+  font-family: var(--font-mono);
+  font-stretch: 87.5%;
+  font-size: 10.5px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--color-ash);
+}
+
+.mono {
+  font-family: var(--font-mono);
+  font-stretch: 87.5%;
+}
+
+.display {
+  font-family: var(--font-display);
+  font-variation-settings: "ROND" 100;
+  font-weight: 900;
+  letter-spacing: -0.01em;
+  line-height: 0.95;
+}
+
+/* Pill buttons, glass on photos and solid on slabs. */
+.pill {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  height: 40px;
+  padding: 0 16px;
+  border-radius: 999px;
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--color-bone);
+  background: rgb(255 255 255 / 0.07);
+  box-shadow: inset 0 0 0 1px var(--color-edge);
+  transition: background-color 0.2s ease, box-shadow 0.2s ease, transform 0.14s var(--ease-out);
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.pill:hover {
+  background: rgb(255 255 255 / 0.12);
+  box-shadow: inset 0 0 0 1px var(--color-edge-hi);
+}
+
+.pill:active {
+  transform: scale(0.97);
+}
+
+.pill-solid {
+  background: var(--color-bone);
+  color: var(--color-void);
+  box-shadow: none;
+}
+
+.pill-solid:hover {
+  background: #ffffff;
+  box-shadow: none;
+}
+
+.icon-btn {
+  width: 40px;
+  padding: 0;
+}
+
+/* ---------- Dithered images ---------- */
+
+/* The 1-bit layer sits over the photo and wipes away in steps on hover,
+   so every image "decrypts" from top to bottom. */
+.dither canvas {
+  clip-path: inset(0 0 0 0);
+  transition: clip-path 0.9s steps(18, end);
+  image-rendering: pixelated;
+}
+
+.dither img {
+  filter: grayscale(1) contrast(1.08);
+  transform: scale(1.04);
+  transition: transform 1.2s var(--ease-out);
+}
+
+.decrypt:hover .dither canvas,
+.decrypt:focus-visible .dither canvas,
+.dither[data-open="true"] canvas {
+  clip-path: inset(100% 0 0 0);
+}
+
+.decrypt:hover .dither img,
+.dither[data-open="true"] img {
+  transform: scale(1);
+}
+
+/* Code tiles: a bright copy of the code wipes in over a dim one. */
+.code-bright {
+  clip-path: inset(0 0 100% 0);
+  transition: clip-path 0.9s steps(18, end);
+}
+
+.decrypt:hover .code-bright,
+.decrypt:focus-visible .code-bright {
+  clip-path: inset(0 0 0 0);
+}
+
+/* The scanline that leads the wipe. */
+.dither::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  height: 1px;
+  background: var(--color-bone);
+  box-shadow: 0 0 12px 1px rgb(255 255 255 / 0.6);
+  opacity: 0;
+  pointer-events: none;
+}
+
+.decrypt:hover .dither::after,
+.dither[data-open="true"]::after {
+  animation: scan 0.9s steps(18, end) forwards;
+}
+
+@keyframes scan {
+  0% { top: 0; opacity: 1; }
+  95% { opacity: 1; }
+  100% { top: 100%; opacity: 0; }
+}
+
+/* Redacted text: the bar is the span's own background, so it follows
+   line wraps, and it wipes away to the right on hover or tap. */
+.redact {
+  color: transparent;
+  background: linear-gradient(var(--color-bone), var(--color-bone)) no-repeat right center / 100% 82%;
+  -webkit-box-decoration-break: clone;
+  box-decoration-break: clone;
+  border-radius: 2px;
+  transition: background-size 0.5s var(--ease-out), color 0.2s ease 0.2s;
+}
+
+[data-open="true"] .redact {
+  color: var(--color-bone);
+  background-size: 0% 82%;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .group:hover .redact {
+    color: var(--color-bone);
+    background-size: 0% 82%;
+  }
+}
+
+/* Pointer crosshair: hairlines across the viewport plus a coordinate readout. */
+.crosshair {
+  position: fixed;
+  inset: 0;
+  z-index: 55;
+  pointer-events: none;
+  mix-blend-mode: difference;
+}
+
+.crosshair > * {
+  position: absolute;
+  top: 0;
+  left: 0;
+  will-change: transform;
+  transition: opacity 0.15s ease;
+}
+
+
+/* ---------- Misc ---------- */
+
+.marquee {
+  animation: marquee 38s linear infinite;
+}
+
+.marquee-wrap:hover .marquee {
+  animation-play-state: paused;
+}
+
+@keyframes marquee {
+  to { transform: translateX(-50%); }
+}
+
+.blink {
+  animation: blink 1.1s steps(1) infinite;
+}
+
+@keyframes blink {
+  50% { opacity: 0; }
+}
+
+.pulse-dot {
+  position: relative;
+}
+
+.pulse-dot::after {
+  content: "";
+  position: absolute;
+  inset: -4px;
+  border-radius: 999px;
+  border: 1px solid var(--color-bone);
+  animation: ping 2.4s var(--ease-out) infinite;
+}
+
+@keyframes ping {
+  0% { transform: scale(0.6); opacity: 0.8; }
+  100% { transform: scale(1.8); opacity: 0; }
+}
+
+.no-scrollbar {
+  scrollbar-width: none;
+}
+
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+.thin-scroll {
+  scrollbar-width: thin;
+  scrollbar-color: rgb(255 255 255 / 0.15) transparent;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+  }
+
+  body::after {
+    animation: none;
+  }
+
+  .marquee {
+    animation: none;
+  }
+}

@@ -1,6 +1,0 @@
-{
-  "name": "Futuristic Cyber Portfolio",
-  "description": "Supercharged portfolio featuring an interactive dual boot Windows/Kali Linux workspace simulator, automated secure handshake transmissions, and dual visual theme interfaces.",
-  "requestFramePermissions": [],
-  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
-}

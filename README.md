@@ -1,20 +1,18 @@
-<div align="center">
-<img width="1200" height="475" alt="GHBanner" src="https://ai.google.dev/static/site-assets/images/share-ais-513315318.png" />
-</div>
+# Ramon Adedotun (@phantom)
 
-# Run and deploy your AI Studio app
+Portfolio site. A monochrome bento grid of work, experiments and live widgets, built with Next.js, Tailwind v4 and Motion.
 
-This contains everything you need to run your app locally.
+## Run it
 
-View your app in AI Studio: https://ai.studio/apps/8869f394-0300-4747-9ade-ac41267fb411
+```bash
+npm install
+npm run dev        # http://localhost:3100
+```
 
-## Run Locally
+## Edit the content
 
-**Prerequisites:**  Node.js
+Everything a visitor reads lives in `src/data.ts`. Search the project for `TODO` to find what still needs real content (links, screenshots, the CV, project details).
 
+Images live in `public/img/`. Most are Unsplash placeholders; see `public/img/CREDITS.md`.
 
-1. Install dependencies:
-   `npm install`
-2. Set the `GEMINI_API_KEY` in [.env.local](.env.local) to your Gemini API key
-3. Run the app:
-   `npm run dev`
+Add `?skipintro` to the URL to skip the boot intro (it also only plays once per browser session).
