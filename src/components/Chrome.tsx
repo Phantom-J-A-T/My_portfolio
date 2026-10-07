@@ -75,7 +75,7 @@ export function BackToTop() {
 
 export function Footer() {
   return (
-    <footer className="label mx-auto mt-16 max-w-[1800px] px-5 pb-28">
+    <footer className="label mx-auto mt-16 max-w-[1800px] px-5 pb-28 text-center">
       <span>© {new Date().getFullYear()} {PROFILE.name}</span>
     </footer>
   );
